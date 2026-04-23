@@ -22,6 +22,21 @@ namespace TaskManagerApp
 
         public List<AbstractTask> SubTasks { get; set; } = new List<AbstractTask>();
 
+        public int CountAllSubTasks()
+        {
+            if (SubTasks == null || SubTasks.Count == 0)
+                return 0;
+
+            int count = SubTasks.Count;
+
+            foreach (var sub in SubTasks)
+            {
+                count += sub.CountAllSubTasks();
+            }
+
+            return count;
+        }
+
         public abstract int CalculateTotalWorkload();
     }
 }

@@ -16,35 +16,40 @@ namespace TaskManagerApp
             InitializeGrid();
         }
 
-        // ✅ GRID SETUP
         private void InitializeGrid()
         {
             gridTasks.Columns.Clear();
             gridTasks.Columns.Add("colID", "ID");
             gridTasks.Columns.Add("colTitle", "Title");
             gridTasks.Columns.Add("colPriority", "Priority");
+
+            gridTasks.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            gridTasks.MultiSelect = false;
         }
 
-        // ✅ ADD TASK
         private void btnAddTask_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(txtTitle.Text))
+            {
+                MessageBox.Show("Please enter a task title.");
+                return;
+            }
+
+            if (!int.TryParse(txtPriority.Text, out int priority))
+            {
+                MessageBox.Show("Priority must be a number (1-5).");
+                return;
+            }
+
             try
             {
-                if (string.IsNullOrWhiteSpace(txtTitle.Text) ||
-                    string.IsNullOrWhiteSpace(txtPriority.Text))
-                {
-                    MessageBox.Show("Please enter Title and Priority.");
-                    return;
-                }
-
                 ProjectTask task = new ProjectTask
                 {
                     Id = nextId++,
-                    Title = txtTitle.Text,
-                    Priority = int.Parse(txtPriority.Text)
+                    Title = txtTitle.Text.Trim(),
+                    Priority = priority
                 };
 
-                // Add subtasks
                 foreach (var item in listSubtasks.Items)
                 {
                     task.SubTasks.Add(new ProjectTask
@@ -58,6 +63,8 @@ namespace TaskManagerApp
 
                 RefreshGrid();
                 ClearInputs();
+
+                MessageBox.Show("Task added successfully!");
             }
             catch (Exception ex)
             {
@@ -65,63 +72,105 @@ namespace TaskManagerApp
             }
         }
 
-        // ✅ ADD SUBTASK
         private void btnAddSubtask_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(txtSubtask.Text))
             {
-                listSubtasks.Items.Add(txtSubtask.Text);
+                listSubtasks.Items.Add(txtSubtask.Text.Trim());
                 txtSubtask.Clear();
-                UpdateSubtaskCount();
+                txtTotalSubtasks.Text = listSubtasks.Items.Count.ToString();
+            }
+            else
+            {
+                MessageBox.Show("Enter a subtask first.");
             }
         }
 
-        // ✅ REMOVE TASK (FIFO)
         private void btnRemove_Click(object sender, EventArgs e)
         {
-            if (taskQueue.Count > 0)
+            if (gridTasks.SelectedRows.Count > 0)
             {
-                taskQueue.Dequeue();
+                int selectedId = Convert.ToInt32(gridTasks.SelectedRows[0].Cells[0].Value);
+
+                Queue<ProjectTask> newQueue = new Queue<ProjectTask>();
+
+                foreach (var task in taskQueue)
+                {
+                    if (task.Id != selectedId)
+                        newQueue.Enqueue(task);
+                }
+
+                taskQueue = newQueue;
                 RefreshGrid();
+
+                MessageBox.Show("Task removed.");
             }
             else
             {
-                MessageBox.Show("No tasks to remove.");
+                MessageBox.Show("Please select a task to remove.");
             }
         }
 
-        // ✅ SEARCH TASK (Linear Search using txtTitle as ID input)
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            if (int.TryParse(txtTitle.Text, out int id))
+            Form prompt = new Form()
             {
-                ProjectTask found = null;
+                Width = 300,
+                Height = 150,
+                Text = "Search Task"
+            };
 
-                foreach (var task in taskQueue) // Linear Search
+            Label textLabel = new Label() { Left = 20, Top = 20, Text = "Enter Task ID:" };
+            TextBox inputBox = new TextBox() { Left = 20, Top = 50, Width = 240 };
+            Button confirm = new Button() { Text = "Search", Left = 20, Width = 100, Top = 80 };
+
+            confirm.Click += (s, ev) =>
+            {
+                if (!int.TryParse(inputBox.Text, out int id))
                 {
-                    if (task.Id == id)
-                    {
-                        found = task;
-                        break;
-                    }
+                    MessageBox.Show("Invalid ID.");
+                    return;
                 }
+
+                ProjectTask found = FindTaskById(id);
 
                 if (found != null)
-                {
                     MessageBox.Show($"Found: {found.Title} (Priority {found.Priority})");
-                }
                 else
-                {
                     MessageBox.Show("Task not found.");
-                }
+
+                prompt.Close();
+            };
+
+            prompt.Controls.Add(textLabel);
+            prompt.Controls.Add(inputBox);
+            prompt.Controls.Add(confirm);
+            prompt.ShowDialog();
+        }
+
+        private ProjectTask FindTaskById(int id)
+        {
+            foreach (var task in taskQueue)
+            {
+                if (task.Id == id)
+                    return task;
+            }
+            return null;
+        }
+
+        private void btnRemoveSubtask_Click(object sender, EventArgs e)
+        {
+            if (listSubtasks.SelectedItem != null)
+            {
+                listSubtasks.Items.Remove(listSubtasks.SelectedItem);
+                txtTotalSubtasks.Text = listSubtasks.Items.Count.ToString();
             }
             else
             {
-                MessageBox.Show("Enter a valid ID in Title box to search.");
+                MessageBox.Show("Select a subtask to remove.");
             }
         }
 
-        // ✅ REFRESH GRID
         private void RefreshGrid()
         {
             gridTasks.Rows.Clear();
@@ -132,7 +181,6 @@ namespace TaskManagerApp
             }
         }
 
-        // ✅ CLEAR INPUTS
         private void ClearInputs()
         {
             txtTitle.Clear();
@@ -140,12 +188,6 @@ namespace TaskManagerApp
             txtSubtask.Clear();
             listSubtasks.Items.Clear();
             txtTotalSubtasks.Text = "0";
-        }
-
-        // ✅ UPDATE SUBTASK COUNT
-        private void UpdateSubtaskCount()
-        {
-            txtTotalSubtasks.Text = listSubtasks.Items.Count.ToString();
         }
     }
 }

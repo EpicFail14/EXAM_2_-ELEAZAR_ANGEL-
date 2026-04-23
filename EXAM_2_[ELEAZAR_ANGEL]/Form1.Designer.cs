@@ -55,6 +55,7 @@
             this.label14 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.txtTotalSubtasks = new System.Windows.Forms.TextBox();
+            this.btnRemoveSubtask = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -187,7 +188,7 @@
             this.btnRemove.TabIndex = 7;
             this.btnRemove.Text = "🗑 Remove Selected Task";
             this.btnRemove.UseVisualStyleBackColor = false;
-            this.btnRemove.TextChanged += new System.EventHandler(this.btnRemove_Click);
+            this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
             // 
             // btnSearch
             // 
@@ -200,7 +201,7 @@
             this.btnSearch.TabIndex = 6;
             this.btnSearch.Text = "🔍 Search Task by ID";
             this.btnSearch.UseVisualStyleBackColor = false;
-            this.btnSearch.TextChanged += new System.EventHandler(this.btnSearch_Click);
+            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             // 
             // gridTasks
             // 
@@ -210,27 +211,31 @@
             this.colID,
             this.colTitle,
             this.colPriority});
-            this.gridTasks.Location = new System.Drawing.Point(3, 42);
+            this.gridTasks.Location = new System.Drawing.Point(17, 42);
             this.gridTasks.Name = "gridTasks";
             this.gridTasks.RowHeadersVisible = false;
-            this.gridTasks.Size = new System.Drawing.Size(318, 307);
+            this.gridTasks.RowHeadersWidth = 62;
+            this.gridTasks.Size = new System.Drawing.Size(292, 307);
             this.gridTasks.TabIndex = 2;
             // 
             // colID
             // 
             this.colID.HeaderText = "ID";
+            this.colID.MinimumWidth = 8;
             this.colID.Name = "colID";
             this.colID.Width = 40;
             // 
             // colTitle
             // 
             this.colTitle.HeaderText = "Title";
+            this.colTitle.MinimumWidth = 8;
             this.colTitle.Name = "colTitle";
-            this.colTitle.Width = 230;
+            this.colTitle.Width = 205;
             // 
             // colPriority
             // 
             this.colPriority.HeaderText = "Priority";
+            this.colPriority.MinimumWidth = 8;
             this.colPriority.Name = "colPriority";
             this.colPriority.Width = 45;
             // 
@@ -238,7 +243,7 @@
             // 
             this.lblTaskQueue.AutoSize = true;
             this.lblTaskQueue.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTaskQueue.Location = new System.Drawing.Point(16, 11);
+            this.lblTaskQueue.Location = new System.Drawing.Point(13, 11);
             this.lblTaskQueue.Name = "lblTaskQueue";
             this.lblTaskQueue.Size = new System.Drawing.Size(226, 22);
             this.lblTaskQueue.TabIndex = 1;
@@ -247,6 +252,7 @@
             // 
             // panel4
             // 
+            this.panel4.Controls.Add(this.btnRemoveSubtask);
             this.panel4.Controls.Add(this.btnAddSubtask);
             this.panel4.Controls.Add(this.listSubtasks);
             this.panel4.Controls.Add(this.txtSubtask);
@@ -268,14 +274,14 @@
             this.btnAddSubtask.TabIndex = 8;
             this.btnAddSubtask.Text = "+ Add Subtask";
             this.btnAddSubtask.UseVisualStyleBackColor = false;
-            this.btnAddSubtask.TextChanged += new System.EventHandler(this.btnAddSubtask_Click);
+            this.btnAddSubtask.Click += new System.EventHandler(this.btnAddSubtask_Click);
             // 
             // listSubtasks
             // 
             this.listSubtasks.FormattingEnabled = true;
             this.listSubtasks.Location = new System.Drawing.Point(20, 115);
             this.listSubtasks.Name = "listSubtasks";
-            this.listSubtasks.Size = new System.Drawing.Size(221, 95);
+            this.listSubtasks.Size = new System.Drawing.Size(221, 69);
             this.listSubtasks.TabIndex = 7;
             // 
             // txtSubtask
@@ -331,6 +337,19 @@
             this.txtTotalSubtasks.Size = new System.Drawing.Size(21, 20);
             this.txtTotalSubtasks.TabIndex = 8;
             // 
+            // btnRemoveSubtask
+            // 
+            this.btnRemoveSubtask.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.btnRemoveSubtask.Font = new System.Drawing.Font("Times New Roman", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnRemoveSubtask.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.btnRemoveSubtask.Location = new System.Drawing.Point(49, 190);
+            this.btnRemoveSubtask.Name = "btnRemoveSubtask";
+            this.btnRemoveSubtask.Size = new System.Drawing.Size(179, 26);
+            this.btnRemoveSubtask.TabIndex = 8;
+            this.btnRemoveSubtask.Text = "🗑 Remove Selected Subtask";
+            this.btnRemoveSubtask.UseVisualStyleBackColor = false;
+            this.btnRemoveSubtask.Click += new System.EventHandler(this.btnRemoveSubtask_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -375,9 +394,6 @@
         private System.Windows.Forms.Label lblAddTask;
         private System.Windows.Forms.Label lblTaskQueue;
         private System.Windows.Forms.DataGridView gridTasks;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colID;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colTitle;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colPriority;
         private System.Windows.Forms.TextBox txtSubtask;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label8;
@@ -389,6 +405,10 @@
         private System.Windows.Forms.Button btnAddSubtask;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox txtTotalSubtasks;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colID;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colTitle;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPriority;
+        private System.Windows.Forms.Button btnRemoveSubtask;
     }
 }
 
